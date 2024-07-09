@@ -1,0 +1,77 @@
+﻿@using WebShop.Models;
+@model User;
+
+@{
+	ViewData["Title"] = "AddUser";
+
+}
+
+<h1>Добваить пользователя</h1>
+
+<div class="row">
+	<div class="col">
+		@using (Html.BeginForm("AddUser", "Home",new {ReturnUrl = ViewBag.ReturnUrl}, FormMethod.Post))
+		{
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Фамилия</label>
+						@Html.TextBoxFor(x => x.UserSurname, "", new { @class = "form-control", @placeholder = "", @id = "UserSurname" })
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Имя</label>
+						@Html.TextBoxFor(x => x.UserName, "", new { @class = "form-control", @placeholder = "", @id = "UserName" })
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Отчество</label>
+						@Html.TextBoxFor(x => x.UserPantonymic, "", new { @class = "form-control", @placeholder = "", @id = "UserPantonymic" })
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Логин</label>
+						@Html.TextBoxFor(x => x.UserLogin, "", new { @class = "form-control", @placeholder = "", @id = "UserLogin" })
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Пароль</label>
+						@Html.TextBoxFor(x => x.UserPassword, "", new { @class = "form-control", @placeholder = "", @id = "UserPassword" })
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Номер телефона</label>
+						@Html.TextBoxFor(x => x.UserPhoneNumber, "", new { @class = "form-control", @placeholder = "", @id = "UserPhoneNumber" })
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Баланс</label>
+						@Html.TextBoxFor(x => x.UserMoney, "", new { @class = "form-control", @placeholder = "", @id = "UserMoney" })
+					</div>
+				</div>
+			</div>
+
+			<div>
+				<button type="submit">Сохранить</button>
+				</div>
+		}
+	</div>
+</div>
