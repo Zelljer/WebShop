@@ -60,6 +60,7 @@ namespace WebShop.Controllers
 
 		public async Task<IActionResult> AddUser(int? id)
         {
+			ViewBag.RoleList = _context.Roles.ToList(); 
 			if (id != null)
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(p => p.Id == id);
@@ -87,23 +88,19 @@ namespace WebShop.Controllers
                                     p.UserName!.Contains(name) || 
                                     p.UserPantonymic!.Contains(name));
 
-            List<Role> roles = _context.Roles.ToList();
-            roles.Insert(0, new Role { RoleName = "Все", Id = 0 });
 
-            UserListViewModel viewModel = new UserListViewModel
+            List<Role> roles = _context.Roles.ToList();
+			roles.Insert(0, new Role { RoleName = "Все", Id = 0 });
+
+            UserListViewModel userListViewModel = new UserListViewModel
             {
-                Users = users.ToList(),
+                Users =  users.ToList(),
                 Roles = new SelectList(roles, "Id", "RoleName",role),
                 Name = name
             };
 
-			return View(viewModel);
+			return View(userListViewModel);
         } 
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

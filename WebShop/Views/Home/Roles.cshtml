@@ -1,0 +1,50 @@
+﻿@using WebShop.Models
+
+@{
+    // ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Пользователи</p>
+</div>
+
+<br />
+
+<div>
+    <div>
+        <table class="table table-stroiped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Название роли</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th>@item.Id</th>
+                        <th>@item.RoleName</th>
+                        <td>
+                            <a asp-action="AddRole" asp-controller="Role" asp-route-id="@item.Id">Изменить</a>
+                        </td>
+
+                        <td>
+                            <form asp-controller="Role" asp-action="Delete" method="post" asp-route-id="@item.Id">
+                                <input type="submit" value="Удалить" />
+                            </form>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <a href="Role/AddRole">
+            Добавить новую роль
+        </a>
+    </div>
+</div>

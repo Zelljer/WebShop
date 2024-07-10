@@ -73,9 +73,10 @@
 					<div class="row">
 						<label>Роль</label>
 						<select asp-for="UserRole.Id"  class="form-control" id="UserRoleLst">
-							<option value="1">Администратор</option>
-							<option value="2">Менеджер</option>
-							<option value="3">Клиент</option>
+							@foreach (var item in ViewBag.RoleList)
+							{
+								<option value=@item.Id>@item.RoleName</option>
+							}
 						</select>
 						
 					</div>
