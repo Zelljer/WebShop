@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using WebShop.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -10,7 +13,7 @@ namespace WebShop.Controllers
     {
 
         private readonly ApplicationContext _context;
-        private readonly ILogger<HomeController> _logger;
+		private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger, ApplicationContext context)
         {
@@ -28,12 +31,19 @@ namespace WebShop.Controllers
                 _context.Maufacturers.AddRange(company1, company3, company2, company4);
                 _context.SaveChanges();
             }
+
+			if (!_context.Roles.Any())
+			{
+				Role role1 = new Role { RoleName = "Администратор" };
+				Role role2 = new Role { RoleName = "Менеджер" }; 
+                Role role3 = new Role { RoleName = "Клиент" };
+
+				_context.Roles.AddRange(role1, role2, role3);
+				_context.SaveChanges();
+			}
+
         }
 
-        public IActionResult Index()
-        {
-            return View(_context.Users.ToList());
-        }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int? id)
@@ -48,21 +58,46 @@ namespace WebShop.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> AddUser(int? id)
+		public async Task<IActionResult> AddUser(int? id)
         {
-            if (id != null)
+			if (id != null)
             {
                 User? user = await _context.Users.FirstOrDefaultAsync(p => p.Id == id);
-                if (user != null) return View(user); 
+				if (user != null) return View(user); 
             }
             return View(new User());
         }
         [HttpPost]
         public async Task<IActionResult> AddUser(User user)
-        {
-            _context.Users.Update(user);
+        {            
+            user.UserRole.RoleName = (from a in _context.Roles where a.Id == user.UserRole.Id select a.RoleName).FirstOrDefault();
+			_context.Users.Update(user);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Index(int? role, string? name)
+        {
+            IQueryable<User> users = _context.Users.Include(p => p.UserRole);
+            if (role != null && role != 0)
+                users = users.Where(p => p.UserRole.Id == role);
+
+                if (!string.IsNullOrEmpty(name))
+                users = users.Where(p => p.UserSurname!.Contains(name) || 
+                                    p.UserName!.Contains(name) || 
+                                    p.UserPantonymic!.Contains(name));
+
+            List<Role> roles = _context.Roles.ToList();
+            roles.Insert(0, new Role { RoleName = "Все", Id = 0 });
+
+            UserListViewModel viewModel = new UserListViewModel
+            {
+                Users = users.ToList(),
+                Roles = new SelectList(roles, "Id", "RoleName",role),
+                Name = name
+            };
+
+			return View(viewModel);
         } 
 
         public IActionResult Privacy()

@@ -1,7 +1,8 @@
 ﻿@using WebShop.Models
+@model WebShop.Models.UserListViewModel
 
 @{
-    ViewData["Title"] = "Home Page";
+   // ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
@@ -10,6 +11,19 @@
 </div>
 
 <br/>
+
+<form method="get">
+    <div>
+
+        <label>Имя: </label>
+        <input asp-for="Name" />
+
+        <label>Роль: </label>
+        <select name="role" asp-items="Model.Roles"></select>
+
+        <input type="submit" value="Фильтр" />
+    </div>
+</form>
 
 <div>
     <div>
@@ -24,12 +38,14 @@
                     <th>Пароль</th>
                     <th>Телефон</th>
                     <th>Баланс</th>
+                    <th>Роль</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in Model.Users)
                 {
                     <tr>
+
                         <th>@item.Id</th>
                         <th>@item.UserSurname</th>
                         <th>@item.UserName </th>
@@ -38,6 +54,8 @@
                         <th>@item.UserPassword</th>
                         <th>@item.UserPhoneNumber</th>
                         <th>@item.UserMoney</th>
+                        <th>@item.UserRole.RoleName</th>
+
 
                         <td>
                             <a asp-action="AddUser" asp-controller="Home" asp-route-id="@item.Id">Изменить</a>
