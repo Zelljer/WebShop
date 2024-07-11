@@ -92,7 +92,7 @@ namespace WebShop.Controllers
             return true;
         }*/
 
-		public ActionResult Index(int? maufacturer, string? name)
+		public ActionResult Index(int? maufacturer, string? name, SortState sortOrder = SortState.IdAsc)
 		{
 			IQueryable<Product> products = _context.Products.Include(p => p.ProductMaufacturer);
 			if (maufacturer != null && maufacturer != 0)
@@ -102,7 +102,30 @@ namespace WebShop.Controllers
 				products = products.Where(p => p.ProductName!.Contains(name) ||
 									p.ProductDescription!.Contains(name));
 
-			List<Maufacturer> maufacturers = _context.Maufacturers.ToList();
+            ViewData["IdSort"] = sortOrder == SortState.IdAsc ? SortState.IdDesc : SortState.IdAsc;
+            ViewData["NameSort"] = sortOrder == SortState.NameAsc ? SortState.NameDesc : SortState.NameAsc;
+            ViewData["CostSort"] = sortOrder == SortState.CostAsc ? SortState.CostDesc : SortState.CostAsc;
+            ViewData["UnitSort"] = sortOrder == SortState.UnitAsc ? SortState.UnitDesc : SortState.UnitAsc;
+            ViewData["DescriptionSort"] = sortOrder == SortState.DescriptionAsc ? SortState.DescriptionDesc : SortState.DescriptionAsc;
+            ViewData["MaufacturerSort"] = sortOrder == SortState.MaufacturerAsc ? SortState.MaufacturerDesc : SortState.MaufacturerAsc;
+
+            products = sortOrder switch
+            {
+                SortState.IdDesc => products.OrderByDescending(s => s.Id),
+                SortState.NameAsc => products.OrderBy(s => s.ProductName),
+                SortState.NameDesc => products.OrderByDescending(s => s.ProductName),
+                SortState.CostAsc => products.OrderBy(s => (double)s.ProductCost),
+                SortState.CostDesc => products.OrderByDescending(s => (double)s.ProductCost),
+                SortState.UnitAsc => products.OrderBy(s => s.ProductUnit),
+                SortState.UnitDesc => products.OrderByDescending(s => s.ProductUnit),
+                SortState.DescriptionAsc => products.OrderBy(s => s.ProductDescription),
+                SortState.DescriptionDesc => products.OrderByDescending(s => s.ProductDescription),
+                SortState.MaufacturerAsc => products.OrderBy(s => s.ProductMaufacturer!.Id),
+                SortState.MaufacturerDesc => products.OrderByDescending(s => s.ProductMaufacturer!.Id),
+                _ => products.OrderBy(s => s.Id),
+            };
+
+            List<Maufacturer> maufacturers = _context.Maufacturers.ToList();
 			maufacturers.Insert(0, new Maufacturer { MaufacturerName = "Все", Id = 0 });
 
 			ProductListViewModel productListViewModel = new ProductListViewModel

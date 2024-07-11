@@ -28,12 +28,12 @@
         <table class="table table-stroiped">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Название</th>
-                    <th>Цена</th>
-                    <th>Ед. измерения</th>
-                    <th>Описание</th>
-                    <th>Производитель</th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.IdSort">#</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort">Название</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.CostSort">Цена</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.UnitSort">Ед. измерения</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.DescriptionSort">Описание</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.MaufacturerSort">Производитель</a></th>
                 </tr>
             </thead>
             <tbody>

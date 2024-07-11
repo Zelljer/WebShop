@@ -29,15 +29,15 @@
         <table class ="table table-stroiped">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Фамилия</th>
-                    <th>Имя</th>
-                    <th>Отчество</th>
-                    <th>Логин</th>
-                    <th>Пароль</th>
-                    <th>Телефон</th>
-                    <th>Баланс</th>
-                    <th>Роль</th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.IdSort">#</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.SurnameSort">Фамилия</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort">Имя</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.PantonymicSort">Отчество</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.LoginSort">Логин</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.PasswordSort">Пароль</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.PhoneNumberSort">Телефон</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.MoneySort">Баланс</a></th>
+                    <th><a asp-action="Index" asp-route-sortOrder="@ViewBag.RoleSort">Роль</a></th>
                 </tr>
             </thead>
             <tbody>
