@@ -11,16 +11,15 @@
 
 <br/>
 
-<form method="get">
+<form asp-action="Index">
     <div>
 
         <label>Имя: </label>
-        <input asp-for="Name" />
+        <input asp-for="Name" onchange="this.form.submit()" />
 
         <label>Роль: </label>
-        <select name="role" asp-items="Model.Roles"></select>
+        <select name="role" asp-items="Model.Roles" onchange="this.form.submit()"></select>
 
-        <input type="submit" value="Фильтр" />
     </div>
 </form>
 

@@ -99,6 +99,11 @@ namespace WebShop.Controllers
             return true;
         }*/
 
+        public JsonResult Test(int id)
+        {
+            return Json(_context.Users.Where(u => u.UserRole.Id == id));
+        }
+
         public ActionResult Index(int? role, string? name, SortState sortOrder = SortState.IdAsc)
         {
             ViewBag.SortOrder = 1;
