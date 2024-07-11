@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Reflection;
 using WebShop.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -28,7 +29,7 @@ namespace WebShop.Controllers
                 Maufacturer company3 = new Maufacturer { MaufacturerName = "Компания3" };
                 Maufacturer company4 = new Maufacturer { MaufacturerName = "Компания4" };
 
-                _context.Maufacturers.AddRange(company1, company3, company2, company4);
+                _context.Maufacturers.AddRange(company1, company2, company3, company4);
                 _context.SaveChanges();
             }
 
@@ -50,7 +51,7 @@ namespace WebShop.Controllers
         {
             if (id != null)
             {
-                User user = new User { Id = id.Value };
+				User user = new User { Id = id.Value };
                 _context.Entry(user).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -63,7 +64,7 @@ namespace WebShop.Controllers
 			ViewBag.RoleList = _context.Roles.ToList(); 
 			if (id != null)
             {
-                User? user = await _context.Users.FirstOrDefaultAsync(p => p.Id == id);
+				User? user = await _context.Users.FirstOrDefaultAsync(p => p.Id == id);
 				if (user != null) return View(user); 
             }
             return View(new User());
@@ -73,9 +74,31 @@ namespace WebShop.Controllers
         {            
             user.UserRole.RoleName = (from a in _context.Roles where a.Id == user.UserRole.Id select a.RoleName).FirstOrDefault();
 			_context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
+			await _context.SaveChangesAsync();
+			return RedirectToAction("Index");
+			/*if (isValuesNull(user))
+            {
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["AlertMessage"] = "Не все данные заполненны";
+				ViewBag.RoleList = _context.Roles.ToList();
+				return View(user);
+            }*/
+		}
+
+        /*private bool isValuesNull(object obj)
+        {
+            foreach(PropertyInfo property in obj.GetType().GetProperties())
+            {
+                if(property.GetValue(obj) == null)
+                    return false;
+            }
+            return true;
+        }*/
 
         public ActionResult Index(int? role, string? name)
         {

@@ -1,0 +1,68 @@
+﻿@using WebShop.Models
+@model WebShop.Models.ProductListViewModel
+
+@{
+    ViewData["Title"] = "Продукция";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Продукция</h1>
+</div>
+
+<br />
+
+<form method="get">
+    <div>
+        <label>Название: </label>
+        <input asp-for="Name" />
+
+        <label>Производитель: </label>
+        <select name="maufacturer" asp-items="Model.Manufactures"></select>
+
+        <input type="submit" value="Фильтр" />
+    </div>
+</form>
+
+<div>
+    <div>
+        <table class="table table-stroiped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Название</th>
+                    <th>Цена</th>
+                    <th>Ед. измерения</th>
+                    <th>Описание</th>
+                    <th>Производитель</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <th>@item.Id</th>
+                        <th>@item.ProductName</th>
+                        <th>@item.ProductCost </th>
+                        <th>@item.ProductUnit</th>
+                        <th><label style="width:300px;word-wrap:break-word">@item.ProductDescription</label></th>
+                        <th>@item.ProductMaufacturer.MaufacturerName</th>
+                        <td>
+                            <a asp-action="AddProduct" asp-controller="Product" asp-route-id="@item.Id">Изменить</a>
+                        </td>
+                        <td>
+                            <form asp-action="Delete" asp-controller="Product" method="post" asp-route-id="@item.Id">
+                                <input type="submit" value="Удалить" />
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <a href="Product/AddProduct">
+            Добавить продукцию
+        </a>
+    </div>
+</div>

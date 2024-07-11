@@ -23,23 +23,6 @@ namespace WebShop.Controllers
             return View(await _context.Roles.ToListAsync());
         }
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var role = await _context.Roles
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (role == null)
-            {
-                return NotFound();
-            }
-
-            return View(role);
-        }
-
         public IActionResult Create()
         {
             return View();
@@ -105,34 +88,23 @@ namespace WebShop.Controllers
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            try
             {
+                if (id != null)
+                {
+                    Role role = new Role { Id = id.Value };
+                    _context.Entry(role).State = EntityState.Deleted;
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
                 return NotFound();
             }
-
-            var role = await _context.Roles
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (role == null)
+            catch
             {
-                return NotFound();
+                TempData["AlertMessage"] = "Невозможно удалить данные";
+                return RedirectToAction("Index");
             }
-
-            return View(role);
-        }
-
-        // POST: Role/Delete/5
-        [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
-        {
-			if (id != null)
-			{
-				Role role = new Role { Id = id.Value };
-				_context.Entry(role).State = EntityState.Deleted;
-				await _context.SaveChangesAsync();
-				return RedirectToAction("Index");
-			}
-			return NotFound();
-		}
+        } 
 
         private bool RoleExists(int id)
         {

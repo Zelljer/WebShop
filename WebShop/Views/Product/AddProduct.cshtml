@@ -1,0 +1,73 @@
+﻿@using WebShop.Models;
+@model Product;
+
+@{
+	ViewData["Title"] = "Добавление продукции";
+}
+
+<h1>Добваить продукцию</h1>
+
+@if (TempData["AlertMessage"] != null)
+{
+	<div class="alert alert-danger">
+		@TempData["AlertMessage"]
+	</div>
+}
+
+<div class="row">
+	<div class="col">
+		@using (Html.BeginForm("AddProduct", "Product", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+		{
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Название</label>
+						@Html.TextBoxFor(x => x.ProductName, "", new { @class = "form-control", @placeholder = "", @id = "ProductName" })
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Стоимость</label>
+						@Html.TextBoxFor(x => x.ProductCost, "", new { @class = "form-control", @placeholder = "", @id = "ProductCost" })
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Ед.измерения</label>
+						@Html.TextBoxFor(x => x.ProductUnit, "", new { @class = "form-control", @placeholder = "", @id = "ProductUnit" })
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Описание</label>
+						@Html.TextBoxFor(x => x.ProductDescription, "", new { @class = "form-control", @placeholder = "", @id = "ProductDescription" })
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Производитель</label>
+						<select asp-for="ProductMaufacturer.Id" class="form-control" id="ProductMaufacturer">
+							@foreach (var item in ViewBag.MaufacturerList)
+							{
+								<option value=@item.Id>@item.MaufacturerName</option>
+							}
+						</select>
+
+					</div>
+				</div>
+			</div>
+			<div>
+				<button type="submit">Сохранить</button>
+			</div>
+		}
+	</div>
+</div>
