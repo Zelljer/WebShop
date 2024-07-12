@@ -46,8 +46,8 @@ namespace WebShop.Controllers
 				Product product = new Product { Id = id.Value };
 				_context.Entry(product).State = EntityState.Deleted;
 				await _context.SaveChangesAsync();
-				return RedirectToAction("Index");
-			}
+                return Json(new { result = true });
+            }
 			return NotFound();
 		}
 

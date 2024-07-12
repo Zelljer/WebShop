@@ -4,6 +4,88 @@
     ViewData["Title"] = "Производители";
 }
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript">
+        function ShowDeleteDialog(e) {
+            Swal.fire({
+                title: 'Вы уверены?',
+                text: "Данные нельзя будет востановить!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Да',
+                cancelButtonText: 'Назад',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Maufacturer")',
+                        type: 'POST',
+                        data: { id: e }, // Replace with the actual ID of the item to be deleted
+                        success: function (data) {
+                            if (data.result == "deleted") {
+                                Swal.fire({
+                                    title: 'Удалено!',
+                                    text: 'Данные были удалены.',
+                                    icon: 'success',
+                                    showConfirmButton: true
+                                }).then(function () {
+                                    window.location.reload();
+                                })
+                            }
+                            if (data.result == "haveBinds") {
+                                Swal.fire
+                                    ({
+                                        title: 'Внимаие!',
+                                        text: 'Данные, которые вы пытайтель удалить имеют связи в ДБ. При удалении выбранных данных так же удалятся данные, которые с ними связаны',
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Удалить',
+                                        cancelButtonText: 'Не удалять',
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            $.ajax
+                                                ({
+                                                    url: '@Url.Action("Delete", "Maufacturer")',
+                                                    type: 'POST',
+                                                    data: { id: e, deleteBinds: true }, // Replace with the actual ID of the item to be deleted
+                                                    success: function (data) {
+                                                        if (data.result == "deleted") {
+                                                            Swal.fire({
+                                                                title: 'Удалено!',
+                                                                text: 'Данные были удалены.',
+                                                                icon: 'success',
+                                                                showConfirmButton: true
+                                                            }).then(function () { window.location.reload(); });
+                                                        }
+                                                    },
+                                                    error: function () {
+                                                        Swal.fire(
+                                                            'Ошибка!',
+                                                            'Произошла ошибка при удалении.',
+                                                            'error');
+                                                    }
+                                                });
+                                        }
+                                    });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire(
+                                'Ошибка!',
+                                'Произошла ошибка при удалении.',
+                                'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}
+
 <h1>Производители</h1>
 
 @if (TempData["AlertMessage"] != null)
@@ -34,7 +116,7 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                    <button onclick="return ShowDeleteDialog('@item.Id')" class="btn btn-danger">Удалить</button>
                 </td>
             </tr>
         }

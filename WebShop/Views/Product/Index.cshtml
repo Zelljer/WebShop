@@ -5,21 +5,63 @@
     ViewData["Title"] = "Продукция";
 }
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript">
+        function ShowDeleteDialog(e) {
+            Swal.fire({
+                title: 'Вы уверены?',
+                text: "Данные нельзя будет востановить!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Да',
+                cancelButtonText: 'Назад',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Product")',
+                        type: 'POST',
+                        data: { id: e },
+                        success: function (data) {
+                            if (data.result == true) {
+                                Swal.fire({
+                                    title: 'Удалено!',
+                                    text: 'Данные были удалены.',
+                                    icon: 'success',
+                                    showConfirmButton: true
+                                }).then(function () {
+                                    window.location.reload();
+                                })
+                            }
+                        },
+                        error: function () {
+                            Swal.fire(
+                                'Ошибка!',
+                                'Произошла ошибка при удалении.',
+                                'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}
+
 <div class="text-center">
     <h1 class="display-4">Продукция</h1>
 </div>
 
-<br />
+<br/>
 
-<form method="get">
+<form asp-action="Index">
     <div>
         <label>Название: </label>
-        <input asp-for="Name" />
+        <input asp-for="Name" onchange="this.form.submit()" />
 
         <label>Производитель: </label>
-        <select name="maufacturer" asp-items="Model.Manufactures"></select>
-
-        <input type="submit" value="Фильтр" />
+        <select name="maufacturer" asp-items="Model.Manufactures" onchange="this.form.submit()"></select>
     </div>
 </form>
 
@@ -50,9 +92,7 @@
                             <a asp-action="AddProduct" asp-controller="Product" asp-route-id="@item.Id">Изменить</a>
                         </td>
                         <td>
-                            <form asp-action="Delete" asp-controller="Product" method="post" asp-route-id="@item.Id">
-                                <input type="submit" value="Удалить" />
-                            </form>
+                            <button onclick="return ShowDeleteDialog('@item.Id')" class="btn btn-danger">Удалить</button>
                         </td>
                     </tr>
                 }

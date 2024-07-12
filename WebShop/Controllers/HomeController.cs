@@ -53,7 +53,7 @@ namespace WebShop.Controllers
                 User user = new User { Id = id.Value };
                 _context.Entry(user).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return Json(new { result = true });
             }
             return NotFound();
         }
@@ -161,34 +161,6 @@ namespace WebShop.Controllers
 
             return View(userListViewModel);
         }
-
-        public async Task<IActionResult> UserSorting(SortState sortOrder = SortState.NameAsc)
-        {
-            IQueryable<User> users = _context.Users.Include(p => p.UserRole);
-
-            ViewData["IdSort"] = sortOrder == SortState.IdAsc ? SortState.IdDesc : SortState.IdAsc;
-            ViewData["SurnameSort"] = sortOrder == SortState.SurnameAsc ? SortState.SurnameDesc : SortState.SurnameAsc;
-            ViewData["NameSort"] = sortOrder == SortState.NameAsc ? SortState.NameDesc : SortState.NameAsc;
-            ViewData["PantonymicSort"] = sortOrder == SortState.PantonymicAsc ? SortState.PantonymicDesc : SortState.PantonymicAsc;
-            ViewData["MoneySort"] = sortOrder == SortState.MoneyAsc ? SortState.MoneyDesc : SortState.MoneyAsc;
-            ViewData["RoleSort"] = sortOrder == SortState.RoleAsc ? SortState.RoleDesc : SortState.RoleAsc;
-
-            users = sortOrder switch
-            {
-                SortState.IdDesc => users.OrderByDescending(s => s.Id),
-                SortState.SurnameAsc => users.OrderByDescending(s => s.UserSurname),
-                SortState.SurnameDesc => users.OrderByDescending(s => s.UserSurname),
-                SortState.PantonymicAsc => users.OrderByDescending(s => s.UserPantonymic),
-                SortState.PantonymicDesc => users.OrderByDescending(s => s.UserPantonymic),
-                SortState.MoneyAsc => users.OrderBy(s => s.UserMoney),
-                SortState.MoneyDesc => users.OrderByDescending(s => s.UserMoney),
-                SortState.RoleAsc => users.OrderBy(s => s.UserRole!.RoleName),
-                SortState.RoleDesc => users.OrderByDescending(s => s.UserRole!.RoleName),
-                _ => users.OrderBy(s => s.Id),
-            };
-            return View(await users.AsNoTracking().ToListAsync());
-
-        } 
     
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

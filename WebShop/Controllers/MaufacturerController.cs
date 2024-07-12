@@ -81,21 +81,34 @@ namespace WebShop.Controllers
 			return View(maufacturer);
 		}
 
-		public async Task<IActionResult> Delete(int? id)
-		{
-            if (id != null)
+        public async Task<IActionResult> Delete(int id, bool deleteBinds = false)
+        {
+            var maufacturer = await _context.Maufacturers.FindAsync(id);
+
+            if (maufacturer == null)
+                return NotFound();
+
+            var productsOfMaufacturer = await _context.Products.Where(u => u.ProductMaufacturer.Id == id).ToListAsync();
+            _context.Maufacturers.Remove(maufacturer);
+
+            if (productsOfMaufacturer.Any())
             {
-                Maufacturer maufacturer = new Maufacturer { Id = id.Value };
-                _context.Entry(maufacturer).State = EntityState.Deleted;
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                if (deleteBinds)
+                {
+                    _context.Products.RemoveRange(productsOfMaufacturer);
+                    await _context.SaveChangesAsync();
+                    return Json(new { result = "deleted" });
+                }
+                else
+                {
+                    return Json(new { result = "haveBinds" });
+                }
             }
-            return NotFound();
+            await _context.SaveChangesAsync();
+            return Json(new { result = "deleted" });
         }
 
-		
-
-		private bool RoleExists(int id)
+        private bool RoleExists(int id)
 		{
 			return _context.Roles.Any(e => e.Id == id);
 		}

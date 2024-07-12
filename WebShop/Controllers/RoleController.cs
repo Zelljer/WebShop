@@ -43,15 +43,12 @@ namespace WebShop.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var role = await _context.Roles.FindAsync(id);
             if (role == null)
-            {
                 return NotFound();
-            }
+
             return View(role);
         }
 
@@ -59,9 +56,7 @@ namespace WebShop.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("RoleName,Id")] Role role)
         {
             if (id != role.Id)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -86,25 +81,32 @@ namespace WebShop.Controllers
             return View(role);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id, bool deleteBinds = false)
         {
-            try
-            {
-                if (id != null)
-                {
-                    Role role = new Role { Id = id.Value };
-                    _context.Entry(role).State = EntityState.Deleted;
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("Index");
-                }
+            var role = await _context.Roles.FindAsync(id);
+
+            if (role == null)
                 return NotFound();
-            }
-            catch
+
+            var usersWithRole = await _context.Users.Where(u => u.UserRole.Id == id).ToListAsync();
+            _context.Roles.Remove(role);
+
+            if (usersWithRole.Any())
             {
-                TempData["AlertMessage"] = "Невозможно удалить данные";
-                return RedirectToAction("Index");
+                if (deleteBinds)
+                {
+                    _context.Users.RemoveRange(usersWithRole);
+                    await _context.SaveChangesAsync();
+                    return Json(new { result = "deleted" });
+                }
+                else
+                {
+                    return Json(new { result = "haveBinds" });
+                }
             }
-        } 
+            await _context.SaveChangesAsync();
+            return Json(new { result = "deleted" });
+        }
 
         private bool RoleExists(int id)
         {

@@ -1,7 +1,7 @@
 ﻿@model WebShop.Models.Role
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Создание";
 }
 
 <h1>Создание</h1>
@@ -17,13 +17,14 @@
                 <input asp-for="RoleName" class="form-control" />
                 <span asp-validation-for="RoleName" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Создать" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
+<br />
 <div>
     <a asp-action="Index">Обратно к списку</a>
 </div>
