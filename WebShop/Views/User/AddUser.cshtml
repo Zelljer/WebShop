@@ -2,7 +2,7 @@
 @model User;
 
 <script>
-	
+
 </script>
 
 @{
@@ -12,16 +12,9 @@
 
 <h1>Добваить пользователя</h1>
 
-@if (TempData["AlertMessage"] != null)
-{
-	<div class="alert alert-danger">
-		@TempData["AlertMessage"]
-	</div>
-}
-
 <div class="row">
 	<div class="col">
-		@using (Html.BeginForm("AddUser", "Home",new {ReturnUrl = ViewBag.ReturnUrl}, FormMethod.Post))
+		@using (Html.BeginForm("AddUser", "User", FormMethod.Post))
 		{
 			<div class="row">
 				<div class="row">
@@ -83,20 +76,20 @@
 				<div class="row">
 					<div class="row">
 						<label>Роль</label>
-						<select asp-for="UserRole.Id"  class="form-control" id="UserRoleLst">
+						<select asp-for="UserRole.Id" class="form-control" id="UserRoleLst">
 							@foreach (var item in ViewBag.RoleList)
 							{
 								<option value=@item.Id>@item.RoleName</option>
 							}
 						</select>
-						
+
 					</div>
 				</div>
 			</div>
 			<br />
 			<div>
 				<button type="submit">Сохранить</button>
-				</div>
+			</div>
 		}
 	</div>
 </div>

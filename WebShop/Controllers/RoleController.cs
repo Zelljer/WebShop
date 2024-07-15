@@ -18,68 +18,33 @@ namespace WebShop.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Roles.ToListAsync());
-        }
-
-        public IActionResult Create()
+        public IActionResult Index()
         {
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([Bind("RoleName,Id")] Role role)
+        public async Task<IActionResult> GetData()
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(role);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(role);
+            var data = await _context.Roles.ToListAsync();
+            return PartialView("_RolePartial", data);
         }
 
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var role = await _context.Roles.FindAsync(id);
-            if (role == null)
-                return NotFound();
-
-            return View(role);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("RoleName,Id")] Role role)
-        {
-            if (id != role.Id)
-                return NotFound();
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(role);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RoleExists(role.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(role);
-        }
+		public async Task<IActionResult> AddRole(int? id)
+		{
+			if (id != null) 
+			{
+				Role? role = await _context.Roles.FirstOrDefaultAsync(p => p.Id == id); 
+				if (role != null) return View(role); 
+			}
+			return View(new Role()); 
+		}
+		[HttpPost]
+		public async Task<IActionResult> AddRole(Role role)
+		{
+			_context.Roles.Update(role);
+			await _context.SaveChangesAsync();
+			return RedirectToAction("Index");
+		}
 
         public async Task<IActionResult> Delete(int id, bool deleteBinds = false)
         {

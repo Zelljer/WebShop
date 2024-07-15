@@ -1,0 +1,150 @@
+﻿@using WebShop.Models
+@model WebShop.Models.UserListViewModel
+
+@{
+    ViewData["Title"] = "Пользователи";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Пользователи</h1>
+</div>
+
+<br />
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script type="text/javascript">
+        function ShowDeleteDialog(e) {
+            Swal.fire({
+                title: 'Вы уверены?',
+                text: "Данные нельзя будет востановить!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Да',
+                cancelButtonText: 'Назад',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "User")',
+                        type: 'POST',
+                        data: { id: e },
+                        success: function (data) {
+                            if (data.result == true) {
+                                Swal.fire({
+                                    title: 'Удалено!',
+                                    text: 'Данные были удалены.',
+                                    icon: 'success',
+                                    showConfirmButton: true
+                                }).then(function () {
+                                    loadData();
+                                })
+                            }
+                        },
+                        error: function () {
+                            Swal.fire(
+                                'Ошибка!',
+                                'Произошла ошибка при удалении.',
+                                'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            loadData();
+
+            $("#dataContainer").on("click", ".delete-btn", function () {
+                var id = $(this).data("id");
+                ShowDeleteDialog(id)
+            });
+        });
+
+        function loadData() {
+            $.ajax({
+                url: '@Url.Action("GetData", "User")',
+                type: 'GET',
+                success: function (data) {
+                    $('#dataContainer').html(data);
+                },
+                error: function () {
+                    alert('Ошибка при загрузке данных');
+                }
+            });
+        }
+
+        function sortData(sortType, isAscending) {
+            $.ajax({
+                url: '@Url.Action("Sort", "User")',
+                type: 'POST',
+                data: { SortType: sortType, isAscending: isAscending },
+                success: function (data) {
+                    $('#dataContainer').html(data);
+                },
+                error: function () {
+                    alert('Ошибка при фильтрации данных');
+                }
+            });
+        }
+
+        function filtrData(filtrId) {
+            $.ajax({
+                url: '@Url.Action("Filtr", "User")',
+                type: 'POST',
+                data: { filtrId: filtrId },
+                success: function (data) {
+                    $('#dataContainer').html(data);
+                },
+                error: function () {
+                    alert('Ошибка при фильтрации данных');
+                }
+            });
+        }
+
+        function searchData(searchText) {
+            $.ajax({
+                url: '@Url.Action("Search", "User")',
+                type: 'POST',
+                data: { searchText: searchText },
+                success: function (data) {
+                    $('#dataContainer').html(data);
+                },
+                error: function () {
+                    alert('Ошибка при фильтрации данных');
+                }
+            });
+        }
+
+
+    </script>
+}
+
+<div >
+
+    <label>Поиск: </label>
+    <input type="text" id="searchInput" placeholder="Поиск..." onkeyup="searchData(this.value)" />
+
+    <label>Фильтрация: </label>
+    <select name="role" onchange="filtrData(this.value)" id="filtrSelect">
+    @foreach (var item in Model.FiltrList)
+    {
+        <option value="@item.Id">@item.RoleName</option>
+    }
+    </select>
+
+</div>
+
+
+<div id="dataContainer">
+    @await Html.PartialAsync("_UserPartial", new List<User>())
+</div>
+
+<div>
+    <a href="User/AddUser">
+        Добавить пользователя
+    </a>
+</div>

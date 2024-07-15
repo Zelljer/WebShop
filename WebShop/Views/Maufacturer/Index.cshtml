@@ -6,6 +6,8 @@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script type="text/javascript">
         function ShowDeleteDialog(e) {
             Swal.fire({
@@ -22,7 +24,7 @@
                     $.ajax({
                         url: '@Url.Action("Delete", "Maufacturer")',
                         type: 'POST',
-                        data: { id: e }, // Replace with the actual ID of the item to be deleted
+                        data: { id: e },
                         success: function (data) {
                             if (data.result == "deleted") {
                                 Swal.fire({
@@ -51,7 +53,7 @@
                                                 ({
                                                     url: '@Url.Action("Delete", "Maufacturer")',
                                                     type: 'POST',
-                                                    data: { id: e, deleteBinds: true }, // Replace with the actual ID of the item to be deleted
+                                                    data: { id: e, deleteBinds: true }, 
                                                     success: function (data) {
                                                         if (data.result == "deleted") {
                                                             Swal.fire({
@@ -83,42 +85,38 @@
                 }
             });
         }
+
+        $(document).ready(function () {
+            loadData();
+
+            $("#dataContainer").on("click", ".delete-btn", function () {
+                var id = $(this).data("id");
+                ShowDeleteDialog(id)
+            });
+        });
+
+        function loadData() {
+            $.ajax({
+                url: '@Url.Action("GetData", "Maufacturer")',
+                type: 'GET',
+                success: function (data) {
+                    $('#dataContainer').html(data);
+                },
+                error: function () {
+                    alert('Ошибка при загрузке данных');
+                }
+            });
+        }
     </script>
 }
 
 <h1>Производители</h1>
 
-@if (TempData["AlertMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["AlertMessage"]
-    </div>
-}
-
 <p>
-    <a asp-action="Create">Cоздать нового производителя</a>
+    <a asp-action="AddMaufacturer">Cоздать нового производителя</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-               Название производителя
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MaufacturerName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
-                    <button onclick="return ShowDeleteDialog('@item.Id')" class="btn btn-danger">Удалить</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+<div id="dataContainer">
+    @await Html.PartialAsync("_MaufacturerPartial", new List<Maufacturer>())
+</div>
+

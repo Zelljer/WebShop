@@ -1,0 +1,28 @@
+﻿@using WebShop.Models;
+@model Maufacturer;
+
+@{
+	ViewData["Title"] = "Добавление производителя";
+}
+
+<h1>Добваить производителя</h1>
+
+<div class="row">
+	<div class="col">
+		@using (Html.BeginForm("AddMaufacturer", "Maufacturer", FormMethod.Post))
+		{
+			<div class="row">
+				<div class="row">
+					<div class="row">
+						<label>Название</label>
+						@Html.TextBoxFor(x => x.MaufacturerName)
+					</div>
+				</div>
+			</div>
+			<br />
+			<div>
+				<button type="submit">Сохранить</button>
+			</div>
+		}
+	</div>
+</div>

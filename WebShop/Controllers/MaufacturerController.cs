@@ -13,75 +13,35 @@ namespace WebShop.Controllers
 			_context = context;
 		}
 
-		public async Task<IActionResult> Index()
-		{
-			return View(await _context.Maufacturers.ToListAsync());
-		}
-
-		public IActionResult Create()
+		public IActionResult Index()
 		{
 			return View();
 		}
 
+		public async Task<IActionResult> GetData()
+		{
+			var data = await _context.Maufacturers.ToListAsync();
+			return PartialView("_MaufacturerPartial", data);
+		}
+
+		public async Task<IActionResult> AddMaufacturer(int? id)
+		{
+			if (id != null)
+			{
+				Maufacturer? maufacturer = await _context.Maufacturers.FirstOrDefaultAsync(p => p.Id == id);
+				if (maufacturer != null) return View(maufacturer);
+			}
+			return View(new Maufacturer());
+		}
 		[HttpPost]
-		public async Task<IActionResult> Create([Bind("MaufacturerName,Id")] Maufacturer maufacturer)
+		public async Task<IActionResult> AddMaufacturer(Maufacturer maufacturer)
 		{
-			if (ModelState.IsValid)
-			{
-				_context.Add(maufacturer);
-				await _context.SaveChangesAsync();
-				return RedirectToAction(nameof(Index));
-			}
-			return View(maufacturer);
+			_context.Maufacturers.Update(maufacturer);
+			await _context.SaveChangesAsync();
+			return RedirectToAction("Index");
 		}
 
-		public async Task<IActionResult> Edit(int? id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
-
-			var maufacturer = await _context.Maufacturers.FindAsync(id);
-			if (maufacturer == null)
-			{
-				return NotFound();
-			}
-			return View(maufacturer);
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> Edit(int id, [Bind("MaufacturerName,Id")] Maufacturer maufacturer)
-		{
-			if (id != maufacturer.Id)
-			{
-				return NotFound();
-			}
-
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					_context.Update(maufacturer);
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					if (!RoleExists(maufacturer.Id))
-					{
-						return NotFound();
-					}
-					else
-					{
-						throw;
-					}
-				}
-				return RedirectToAction(nameof(Index));
-			}
-			return View(maufacturer);
-		}
-
-        public async Task<IActionResult> Delete(int id, bool deleteBinds = false)
+		public async Task<IActionResult> Delete(int id, bool deleteBinds = false)
         {
             var maufacturer = await _context.Maufacturers.FindAsync(id);
 

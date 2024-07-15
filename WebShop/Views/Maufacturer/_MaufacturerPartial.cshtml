@@ -1,0 +1,25 @@
+﻿@model IEnumerable<WebShop.Models.Maufacturer>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Название производителя
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaufacturerName)
+                </td>
+                <td>
+                    <button class="btn btn-primary edit-btn" onclick="location.href='@Url.Action("AddMaufacturer", "Maufacturer", new {id = @item.Id})'">Редактировать</button>
+                    <button class="btn btn-danger delete-btn" data-id="@item.Id">Удалить</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

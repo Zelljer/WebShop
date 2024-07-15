@@ -1,0 +1,41 @@
+﻿@model IEnumerable<WebShop.Models.User>
+<div>
+    <div>
+        <table class="table table-stroiped">
+            <thead>
+                <tr>
+                    <th><a asp-action="GetData" asp-route-SortType="Id" asp-route-isAscebding="@(ViewBag.SortType == "Id" && ViewBag.isAscebding ? false : true)">#</a></th>
+                    <th><a asp-action="GetData" asp-route-SortType="Surname" asp-route-isAscebding="@(ViewBag.SortType == "Surname" && ViewBag.isAscebding ? false : true)">Фамилия</a></th>
+                    <th><a asp-action="GetData" asp-route-SortType="Name" asp-route-isAscebding="@(ViewBag.SortType == "Name" && ViewBag.isAscebding ? false : true)">Имя</a></th>
+                    <th><a asp-action="GetData" asp-route-SortType="Pantonymic" asp-route-isAscebding="@(ViewBag.SortType == "Pantonymic" && ViewBag.isAscebding ? false : true)">Отчество</a></th>
+                    <th><a asp-action="GetData" asp-route-SortType="Login" asp-route-isAscebding="@(ViewBag.SortType == "Login" && ViewBag.isAscebding ? false : true)">Логин</a></th>
+                    <th><a asp-action="GetData" asp-route-SortType="Password" asp-route-isAscebding="@(ViewBag.SortType == "Password" && ViewBag.isAscebding ? false : true)">Пароль</a></th>
+                    <th><a asp-action="GetData" asp-route-SortType="PhoneNumber" asp-route-isAscebding="@(ViewBag.SortType == "PhoneNumber" && ViewBag.isAscebding ? false : true)">Телефон</a></th>
+                    <th><a asp-action="GetData" asp-route-SortType="Money" asp-route-isAscebding="@(ViewBag.SortType == "Money" && ViewBag.isAscebding ? false : true)">Баланс</a></th>
+                    <th><a asp-action="GetData" asp-route-SortType="Role" asp-route-isAscebding="@(ViewBag.SortType == "Role" && ViewBag.SortOrisAscebdingder ? false : true)">Роль</a></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th>@Html.DisplayFor(modelItem => item.Id)</th>
+                        <th>@Html.DisplayFor(modelItem => item.UserSurname)</th>
+                        <th>@Html.DisplayFor(modelItem => item.UserName)</th>
+                        <th>@Html.DisplayFor(modelItem => item.UserPantonymic)</th>
+                        <th>@Html.DisplayFor(modelItem => item.UserLogin)</th>
+                        <th>@Html.DisplayFor(modelItem => item.UserPassword)</th>
+                        <th>@Html.DisplayFor(modelItem => item.UserPhoneNumber)</th>
+                        <th>@Html.DisplayFor(modelItem => item.UserMoney)</th>
+                        <th>@Html.DisplayFor(modelItem => item.UserRole.RoleName)</th>
+                        <td>
+                            <button class="btn btn-primary edit-btn" onclick="location.href='@Url.Action("AddUser", "User", new {id = @item.Id})'">Редактировать</button>
+                            <button class="btn btn-danger delete-btn" data-id="@item.Id">Удалить</button>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

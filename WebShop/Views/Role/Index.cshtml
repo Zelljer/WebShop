@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebShop.Models.Role>
+﻿
 
 @{
     ViewData["Title"] = "Роли";
@@ -6,8 +6,10 @@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script type="text/javascript">
-        function ShowDeleteDialog(e) {
+        function ShowDeleteDialog(id) {
             Swal.fire({
                 title: 'Вы уверены?',
                 text: "Данные нельзя будет востановить!",
@@ -22,7 +24,7 @@
                     $.ajax({
                         url: '@Url.Action("Delete", "Role")',
                         type: 'POST',
-                        data: { id: e }, // Replace with the actual ID of the item to be deleted
+                        data: { id: id },
                         success: function (data) {
                             if (data.result == "deleted") {
                                 Swal.fire({
@@ -31,7 +33,7 @@
                                     icon: 'success',
                                     showConfirmButton: true
                                 }).then(function () {
-                                    window.location.reload();
+                                    loadData();
                                 })
                             }
                             if (data.result == "haveBinds") {
@@ -51,7 +53,7 @@
                                                 ({
                                                     url: '@Url.Action("Delete", "Role")',
                                                     type: 'POST',
-                                                    data: { id: e, deleteBinds: true }, // Replace with the actual ID of the item to be deleted
+                                                    data: { id: id, deleteBinds: true },
                                                     success: function (data) {
                                                         if (data.result == "deleted") {
                                                             Swal.fire({
@@ -59,7 +61,7 @@
                                                                 text: 'Данные были удалены.',
                                                                 icon: 'success',
                                                                 showConfirmButton: true
-                                                            }).then(function () { window.location.reload(); });
+                                                            }).then(function () { loadData(); });
                                                         }
                                                     },
                                                     error: function () {
@@ -83,34 +85,37 @@
                 }
             });
         }
+
+        $(document).ready(function () {
+            loadData();
+
+            $("#dataContainer").on("click", ".delete-btn", function () {
+                var id = $(this).data("id");
+                ShowDeleteDialog(id)
+            });
+        });
+
+        function loadData() {
+            $.ajax({
+                url: '@Url.Action("GetData", "Role")',
+                type: 'GET',
+                success: function (data) {
+                    $('#dataContainer').html(data);
+                },
+                error: function () {
+                    alert('Ошибка при загрузке данных');
+                }
+            });
+        }
     </script>
 }
 
 <h1>Роли</h1>
 
 <p>
-    <a asp-action="Create">Создать новую роль</a>
+    <a asp-action="AddRole">Создать новую роль</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Название роли
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.RoleName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
-                <button onclick="return ShowDeleteDialog('@item.Id')" class="btn btn-danger">Удалить</button>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+ <div id="dataContainer">
+        @await Html.PartialAsync("_RolePartial", new List<Role>())
+</div>

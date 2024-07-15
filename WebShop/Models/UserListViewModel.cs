@@ -5,8 +5,8 @@ namespace WebShop.Models
 {
     public class UserListViewModel
     {
-        public List<User> Users { get; set; } = new List<User>();
-        public SelectList Roles { get; set; } = new SelectList(new List<Role>(), "Id", "RoleName");
-        public string? Name { get; set; }
+        public List<Role> FiltrList { get; set; } = new List<Role>();
+        public string? SearchText{ get; set; }
+
     }
 }
