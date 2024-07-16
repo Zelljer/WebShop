@@ -1,12 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-
-namespace WebShop.Models
+﻿namespace WebShop.Models
 {
     public class UserListViewModel
     {
         public List<Role> FiltrList { get; set; } = new List<Role>();
-        public string? SearchText{ get; set; }
 
+        public List<string> SortList { get; set; } = new List<string>() 
+        {
+            "Без сортировки",
+            "Id по возростанию", "Id по убыванию",
+            "Имя по возростанию", "Имя по убыванию",
+            "Фамилия по возростанию", "Фамилия по убыванию",
+            "Отчество по возростанию", "Отчество по убыванию",
+            "Логин по возростанию", "Логин по убыванию",
+            "Телфон по возростанию", "Телфон по убыванию",
+            "Баланс по возростанию", "Баланс по убыванию",
+            "Роль по возростанию", "Роль по убыванию",
+        };   
     }
 }

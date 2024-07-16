@@ -2,6 +2,6 @@
 {
     public class Maufacturer : BaseInformation
     {
-        public string? MaufacturerName { get; set; }
+        public string MaufacturerName { get; set; }
     }
 }

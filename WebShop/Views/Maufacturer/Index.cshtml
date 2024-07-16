@@ -1,6 +1,4 @@
-﻿@model IEnumerable<WebShop.Models.Maufacturer>
-
-@{
+﻿@{
     ViewData["Title"] = "Производители";
 }
 
@@ -33,14 +31,14 @@
                                     icon: 'success',
                                     showConfirmButton: true
                                 }).then(function () {
-                                    window.location.reload();
+                                    loadData();
                                 })
                             }
                             if (data.result == "haveBinds") {
                                 Swal.fire
                                     ({
                                         title: 'Внимаие!',
-                                        text: 'Данные, которые вы пытайтель удалить имеют связи в ДБ. При удалении выбранных данных так же удалятся данные, которые с ними связаны',
+                                        text: 'Данные, которые вы пытайтель удалить имеют связи в БД. При удалении выбранных данных так же удалятся данные, которые с ними связаны',
                                         icon: 'warning',
                                         showCancelButton: true,
                                         confirmButtonColor: '#3085d6',
@@ -61,7 +59,7 @@
                                                                 text: 'Данные были удалены.',
                                                                 icon: 'success',
                                                                 showConfirmButton: true
-                                                            }).then(function () { window.location.reload(); });
+                                                            }).then(function () { loadData(); });
                                                         }
                                                     },
                                                     error: function () {

@@ -6,6 +6,6 @@
         public decimal ProductCost { get; set; }
         public string? ProductUnit { get; set; }
         public string? ProductDescription { get; set; }
-        public virtual Maufacturer? ProductMaufacturer { get; set; }
+        public virtual Maufacturer ProductMaufacturer { get; set; }
     }
 }

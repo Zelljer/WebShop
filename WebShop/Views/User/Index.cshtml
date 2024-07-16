@@ -70,6 +70,9 @@
                 type: 'GET',
                 success: function (data) {
                     $('#dataContainer').html(data);
+                    $("#searchInput").val("");
+                    $("#filtrSelect").prop('selectedIndex',0);
+                    $("#sortSelect").prop('selectedIndex',0);
                 },
                 error: function () {
                     alert('Ошибка при загрузке данных');
@@ -77,11 +80,14 @@
             });
         }
 
-        function sortData(sortType, isAscending) {
+        function filtrData() {
+            var searchText = $("#searchInput").val();
+            var filtrType = $("#filtrSelect").val();
+            var sortType = $("#sortSelect").prop('selectedIndex');
             $.ajax({
-                url: '@Url.Action("Sort", "User")',
+                url: '@Url.Action("DataSettings", "User")',
                 type: 'POST',
-                data: { SortType: sortType, isAscending: isAscending },
+                data: { sortType: sortType, filtrType: filtrType, searchText: searchText },
                 success: function (data) {
                     $('#dataContainer').html(data);
                 },
@@ -90,61 +96,35 @@
                 }
             });
         }
-
-        function filtrData(filtrId) {
-            $.ajax({
-                url: '@Url.Action("Filtr", "User")',
-                type: 'POST',
-                data: { filtrId: filtrId },
-                success: function (data) {
-                    $('#dataContainer').html(data);
-                },
-                error: function () {
-                    alert('Ошибка при фильтрации данных');
-                }
-            });
-        }
-
-        function searchData(searchText) {
-            $.ajax({
-                url: '@Url.Action("Search", "User")',
-                type: 'POST',
-                data: { searchText: searchText },
-                success: function (data) {
-                    $('#dataContainer').html(data);
-                },
-                error: function () {
-                    alert('Ошибка при фильтрации данных');
-                }
-            });
-        }
-
-
     </script>
 }
 
 <div >
-
     <label>Поиск: </label>
-    <input type="text" id="searchInput" placeholder="Поиск..." onkeyup="searchData(this.value)" />
+    <input type="text" id="searchInput" placeholder="Поиск..." onkeyup="filtrData()" />
 
-    <label>Фильтрация: </label>
-    <select name="role" onchange="filtrData(this.value)" id="filtrSelect">
+    <label style ="padding-left:25px">Фильтрация: </label>
+    <select name="filtr" onchange="filtrData()" id="filtrSelect">
     @foreach (var item in Model.FiltrList)
     {
         <option value="@item.Id">@item.RoleName</option>
     }
     </select>
 
-</div>
+    <label style="padding-left:25px">Сортировка: </label>
+    <select name="sort" onchange="filtrData()" id="sortSelect">
+        @foreach (var item in Model.SortList)
+        {
+            <option>@item</option>
+        }
+    </select>
 
+    <a style="padding-left:25px" href="User/AddUser">
+        Добавить пользователя
+    </a>
+</div>
 
 <div id="dataContainer">
     @await Html.PartialAsync("_UserPartial", new List<User>())
 </div>
 
-<div>
-    <a href="User/AddUser">
-        Добавить пользователя
-    </a>
-</div>

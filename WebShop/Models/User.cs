@@ -9,6 +9,6 @@
         public string? UserPassword { get; set; } 
         public int UserPhoneNumber { get; set; }
         public decimal UserMoney { get; set; }
-        public virtual Role? UserRole { get; set; }
+        public virtual Role UserRole { get; set; }
     }
 }
