@@ -7,12 +7,8 @@ namespace WebShop.Controllers
     public class RoleController : Controller
     {
         private readonly ApplicationContext _context;
-
-        public RoleController(ApplicationContext context)
-        {
-            _context = context;
-        }
-
+        public RoleController(ApplicationContext context) => _context = context;
+       
         public IActionResult Index()
         {
             return View();
@@ -24,15 +20,16 @@ namespace WebShop.Controllers
             return PartialView("_RolePartial", data);
         }
 
-		public async Task<IActionResult> AddRole(int? id)
-		{
-			if (id != null) 
-			{
-				Role? role = await _context.Roles.FirstOrDefaultAsync(p => p.Id == id); 
-				if (role != null) return View(role); 
-			}
-			return View(new Role()); 
-		}
+        public async Task<IActionResult> AddRole(int? id)
+        {
+            if (id != null)
+            {
+                Role? role = await _context.Roles.FirstOrDefaultAsync(p => p.Id == id);
+                if (role != null) return View(role);
+            }
+            return View(new Role());
+        }
+
 		[HttpPost]
 		public async Task<IActionResult> AddRole(Role role)
 		{
@@ -66,11 +63,6 @@ namespace WebShop.Controllers
             }
             await _context.SaveChangesAsync();
             return Json(new { result = "deleted" });
-        }
-
-        private bool RoleExists(int id)
-        {
-            return _context.Roles.Any(e => e.Id == id);
         }
     }
 }

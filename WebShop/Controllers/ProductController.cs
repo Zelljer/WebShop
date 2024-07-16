@@ -7,7 +7,7 @@ namespace WebShop.Controllers
     public class ProductController : Controller
     {
 		private readonly ApplicationContext _context;
-		public ProductController(ApplicationContext context) =>_context = context;
+		public ProductController(ApplicationContext context) => _context = context;
 
 		[HttpPost]
 		public async Task<IActionResult> Delete(int? id)

@@ -7,11 +7,7 @@ namespace WebShop.Controllers
 	public class MaufacturerController : Controller
 	{
 		private readonly ApplicationContext _context;
-
-		public MaufacturerController(ApplicationContext context)
-		{
-			_context = context;
-		}
+		public MaufacturerController(ApplicationContext context) => _context = context;
 
 		public IActionResult Index()
 		{
@@ -67,10 +63,5 @@ namespace WebShop.Controllers
             await _context.SaveChangesAsync();
             return Json(new { result = "deleted" });
         }
-
-        private bool RoleExists(int id)
-		{
-			return _context.Roles.Any(e => e.Id == id);
-		}
 	}
 }
